@@ -18,6 +18,9 @@ const providerRoutes = require('./routes/providerRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const complaintRoutes = require('./routes/complaintRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 
@@ -56,6 +59,9 @@ app.use('/api/v1/providers', providerRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/admin/notifications', notificationRoutes);
+app.use('/api/v1/complaints', complaintRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
+app.use('/api/v1/reports', reportRoutes);
 
 // Catch 404 and forward to error handler
 app.use(notFound);

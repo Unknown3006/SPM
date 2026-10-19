@@ -73,7 +73,52 @@ const toggleUserStatus = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Delete user account (admin only)
+ * @route   DELETE /api/v1/admin/users/:id
+ * @access  Private (Admin)
+ */
+const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (req.user._id.toString() === id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Administrators cannot delete their own account',
+        errors: ['Self-deletion forbidden']
+      });
+    }
+
+    const targetUser = await User.findById(id);
+    if (!targetUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (targetUser.role === 'admin') {
+      const adminCount = await User.countDocuments({ role: 'admin' });
+      if (adminCount <= 1) {
+        return res.status(400).json({
+          success: false,
+          message: 'Cannot delete the last remaining administrator',
+          errors: ['Last admin protection']
+        });
+      }
+    }
+
+    await User.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllUsers,
-  toggleUserStatus
+  toggleUserStatus,
+  deleteUser
 };

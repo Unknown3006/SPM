@@ -20,6 +20,7 @@ import AdminDashboard from './pages/dashboard/AdminDashboard';
 import EmployeeDashboard from './pages/dashboard/EmployeeDashboard';
 import CustomerDashboard from './pages/dashboard/CustomerDashboard';
 import BookingConfirmationPage from './pages/booking/BookingConfirmationPage';
+import ComplaintsPage from './pages/support/ComplaintsPage';
 import HelpPage from './pages/HelpPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -69,6 +70,24 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['customer', 'employee', 'admin']}>
                     <BookingConfirmationPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/support/complaints"
+                element={
+                  <ProtectedRoute allowedRoles={['customer', 'employee', 'admin']}>
+                    <ComplaintsPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/complaints"
+                element={
+                  <ProtectedRoute allowedRoles={['customer', 'employee', 'admin']}>
+                    <ComplaintsPage />
                   </ProtectedRoute>
                 }
               />

@@ -8,6 +8,8 @@ const TransportService = require('../models/TransportService');
 const PromotionalOffer = require('../models/PromotionalOffer');
 const Booking = require('../models/Booking');
 const Payment = require('../models/Payment');
+const Complaint = require('../models/Complaint');
+const Review = require('../models/Review');
 
 // Helper to generate dynamic dates relative to today
 const getFutureDate = (daysAhead) => {
@@ -28,7 +30,7 @@ const seedCatalog = async (isReset = false) => {
   console.log(`[Seed] Starting database seeding (Reset mode: ${isReset})...`);
 
   if (isReset) {
-    console.log('[Seed] Purging collections: Users, Packages, Hotels, Transport, Offers, Bookings, Payments...');
+    console.log('[Seed] Purging collections: Users, Packages, Hotels, Transport, Offers, Bookings, Payments, Complaints, Reviews...');
     await User.deleteMany({});
     await TourPackage.deleteMany({});
     await Hotel.deleteMany({});
@@ -36,6 +38,8 @@ const seedCatalog = async (isReset = false) => {
     await PromotionalOffer.deleteMany({});
     await Booking.deleteMany({});
     await Payment.deleteMany({});
+    await Complaint.deleteMany({});
+    await Review.deleteMany({});
   }
 
   // 1. SEED USERS
@@ -1076,6 +1080,61 @@ const seedCatalog = async (isReset = false) => {
         ]
       });
       console.log('  + Seeded Pending Booking: TMS-20261019-1004 (Taj Exotica, ready for Pay Now demo)');
+    }
+
+    // 7. SEED DEMO COMPLAINTS & REVIEWS
+    const completedBooking = await Booking.findOne({ bookingId: 'TMS-20261019-1002' });
+    const confirmedBooking = await Booking.findOne({ bookingId: 'TMS-20261019-1001' });
+
+    // Reviews (Only on completed bookings)
+    if (completedBooking && rajasthanPkg) {
+      const existingReview = await Review.findOne({ booking: completedBooking._id });
+      if (!existingReview) {
+        const review = new Review({
+          user: customer._id,
+          booking: completedBooking._id,
+          package: rajasthanPkg._id,
+          rating: 5,
+          comment: 'Absolutely breathtaking experience exploring Jaipur and Udaipur! The heritage hotels and guided tours were top-notch.'
+        });
+        await review.save();
+        console.log('  + Seeded Review: 5 stars on Rajasthan Royal Heritage Tour');
+      }
+    }
+
+    // Complaints
+    const existingCmp1 = await Complaint.findOne({ complaintId: 'CMP-882194' });
+    if (!existingCmp1) {
+      await Complaint.create({
+        complaintId: 'CMP-882194',
+        user: customer._id,
+        booking: confirmedBooking ? confirmedBooking._id : null,
+        subject: 'Room upgrade inquiry for Taj Exotica',
+        description: 'I would like to inquire if sea-view room upgrades are available for my upcoming stay at Taj Exotica.',
+        status: 'OPEN'
+      });
+      console.log('  + Seeded Open Complaint: CMP-882194');
+    }
+
+    const existingCmp2 = await Complaint.findOne({ complaintId: 'CMP-441209' });
+    if (!existingCmp2) {
+      await Complaint.create({
+        complaintId: 'CMP-441209',
+        user: customer._id,
+        subject: 'Train seat preference assistance',
+        description: 'Need lower berth seats for senior citizen passengers on the Vande Bharat Express booking.',
+        status: 'RESOLVED',
+        assignedTo: agent ? agent._id : null,
+        notes: [
+          {
+            author: agent ? agent._id : customer._id,
+            text: 'Contacted reservation counter; lower berths confirmed for coaches B2 and B3.',
+            createdAt: getPastDate(2)
+          }
+        ],
+        resolution: 'Lower berths confirmed and updated ticket e-voucher re-issued.'
+      });
+      console.log('  + Seeded Resolved Complaint: CMP-441209');
     }
   }
 

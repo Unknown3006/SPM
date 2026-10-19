@@ -12,7 +12,8 @@ import {
   Ticket,
   HelpCircle,
   ChevronDown,
-  Building2
+  Building2,
+  LifeBuoy
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -107,6 +108,15 @@ const Navbar = () => {
                   }`}
                 >
                   <Ticket className="w-4 h-4" /> My Bookings
+                </Link>
+
+                <Link
+                  to="/support/complaints"
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition flex items-center gap-1.5 ${
+                    isActive('/support/complaints') ? 'text-sky-600 bg-sky-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <LifeBuoy className="w-4 h-4" /> Support Tickets
                 </Link>
               </>
             )}
@@ -274,13 +284,22 @@ const Navbar = () => {
           </Link>
 
           {user?.role === 'customer' && (
-            <Link
-              to="/my-bookings"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50"
-            >
-              My Bookings
-            </Link>
+            <>
+              <Link
+                to="/my-bookings"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50"
+              >
+                My Bookings
+              </Link>
+              <Link
+                to="/support/complaints"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Support Tickets
+              </Link>
+            </>
           )}
 
           {user?.role === 'employee' && (
