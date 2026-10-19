@@ -1,0 +1,79 @@
+### Tourism Management System (TMS) REST API Test Collection
+
+@baseUrl = http://localhost:5000/api/v1
+@customerToken = {{loginCustomer.response.body.token}}
+@adminToken = {{loginAdmin.response.body.token}}
+
+### 1. Health Check
+GET {{baseUrl}}/health
+Content-Type: application/json
+
+### 2. Register New Customer
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jane Travel",
+  "email": "jane.travel@test.com",
+  "password": "Password@123",
+  "phone": "+91 9123456789"
+}
+
+### 3. Login as Admin
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@tms.test",
+  "password": "Admin@123"
+}
+
+### 4. Login as Customer
+# @name loginCustomer
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "customer@tms.test",
+  "password": "Customer@123"
+}
+
+### 5. Login with Deactivated User (Should Return 403)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "deactivated@tms.test",
+  "password": "Deactivated@123"
+}
+
+### 6. Get Current User Profile (Customer)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{customerToken}}
+
+### 7. RBAC Security Check: Customer accessing Admin route (Should Return 403)
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{customerToken}}
+
+### 8. RBAC Security Check: Admin accessing Admin route (Should Return 200)
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{adminToken}}
+
+### 9. Forgot Password Request
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "customer@tms.test"
+}
+
+### 10. Update Profile (Name & Phone)
+PATCH {{baseUrl}}/users/me
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "name": "Rahul Sharma (Updated)",
+  "phone": "+91 9999911111"
+}

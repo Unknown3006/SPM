@@ -1,0 +1,17 @@
+{
+  "name": "tourism-management-system",
+  "version": "1.0.0",
+  "description": "Tourism Management System (TMS) Full-Stack Prototype",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "seed": "npm run seed --prefix server",
+    "seed:reset": "npm run seed --prefix server -- --reset",
+    "test": "npm run test --prefix server",
+    "test:client": "npm run test --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.5"
+  }
+}
