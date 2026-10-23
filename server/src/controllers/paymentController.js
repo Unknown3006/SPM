@@ -377,9 +377,35 @@ const downloadInvoice = async (req, res, next) => {
   }
 };
 
+/**
+ * GET /api/v1/payments/razorpay-config
+ * Returns public Razorpay configuration (Key ID, currency)
+ */
+const getRazorpayConfig = async (req, res, next) => {
+  try {
+    const keyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_TMS2026Secure';
+    const isRealKey = Boolean(
+      process.env.RAZORPAY_KEY_ID &&
+      process.env.RAZORPAY_KEY_SECRET &&
+      !process.env.RAZORPAY_KEY_ID.includes('TMS2026Secure')
+    );
+
+    res.status(200).json({
+      success: true,
+      keyId,
+      currency: 'INR',
+      isRealKey,
+      companyName: 'TMS Travel & Tour'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createPaymentOrder,
   verifyPayment,
   handlePaymentWebhook,
-  downloadInvoice
+  downloadInvoice,
+  getRazorpayConfig
 };

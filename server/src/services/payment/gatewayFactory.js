@@ -3,10 +3,11 @@ const razorpayGateway = require('./razorpayGateway');
 
 /**
  * Returns the active payment gateway instance.
- * Defaults to MockGateway for 100% offline prototype demo without paid credentials.
+ * Returns razorpayGateway when preferredGateway is 'Razorpay'.
+ * Defaults to mockGateway for offline test runner and automated Jest tests.
  */
 const getPaymentGateway = (preferredGateway = null) => {
-  if (preferredGateway === 'Razorpay' && razorpayGateway.isConfigured()) {
+  if (preferredGateway === 'Razorpay' || preferredGateway === 'razorpay') {
     return razorpayGateway;
   }
   return mockGateway;

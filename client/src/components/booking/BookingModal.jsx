@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import PriceBreakdown from './PriceBreakdown';
-import MockCheckoutModal from './MockCheckoutModal';
+import RazorpayCheckoutModal from './RazorpayCheckoutModal';
 import {
   Calendar,
   Users,
@@ -15,7 +15,8 @@ import {
   Loader2,
   AlertCircle,
   Clock,
-  Sparkles
+  Sparkles,
+  Lock
 } from 'lucide-react';
 
 const BookingModal = ({ isOpen, onClose, item, itemType = 'package' }) => {
@@ -440,31 +441,34 @@ const BookingModal = ({ isOpen, onClose, item, itemType = 'package' }) => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3.5 px-4 bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-bold text-sm rounded-xl shadow-md shadow-sky-600/20 flex items-center justify-center gap-2 transition disabled:opacity-50"
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 active:scale-98 text-white font-bold text-sm rounded-xl shadow-lg shadow-sky-600/25 flex items-center justify-center gap-2 transition disabled:opacity-50"
               >
                 {submitting ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" /> Reserving Inventory...
+                    <Loader2 className="w-4 h-4 animate-spin" /> Initializing Razorpay Checkout...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4" /> Reserve & Proceed to Pay ₹{priceData.total.toLocaleString('en-IN')}
+                    <Lock className="w-4 h-4 text-sky-200" /> Pay ₹{priceData.total.toLocaleString('en-IN')} via Razorpay
                   </>
                 )}
               </button>
               <p className="text-[10px] text-slate-500 text-center mt-2 flex items-center justify-center gap-1">
-                <Clock className="w-3 h-3" /> Seats will be held for 15 minutes while you checkout.
+                <Clock className="w-3 h-3" /> Booking is only confirmed after successful Razorpay verification.
               </p>
             </div>
           </form>
         </div>
       </div>
 
-      {/* Mock Checkout Modal Trigger */}
+      {/* Razorpay Checkout Modal */}
       {showCheckout && createdBooking && (
-        <MockCheckoutModal
+        <RazorpayCheckoutModal
           isOpen={showCheckout}
-          onClose={() => setShowCheckout(false)}
+          onClose={() => {
+            setShowCheckout(false);
+            setBookingError('Payment was not completed. Your booking is held in Pending Payment state. You can pay anytime from My Bookings.');
+          }}
           booking={createdBooking}
           onPaymentSuccess={handlePaymentSuccess}
         />

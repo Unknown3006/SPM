@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
-import MockCheckoutModal from '../../components/booking/MockCheckoutModal';
+import RazorpayCheckoutModal from '../../components/booking/RazorpayCheckoutModal';
 import {
   Ticket,
   Search,
@@ -421,9 +421,9 @@ const CustomerDashboard = () => {
         </div>
       )}
 
-      {/* Pay Now Checkout Modal */}
+      {/* Razorpay Checkout Modal for Pay Now */}
       {payingBooking && (
-        <MockCheckoutModal
+        <RazorpayCheckoutModal
           isOpen={Boolean(payingBooking)}
           onClose={() => setPayingBooking(null)}
           booking={payingBooking}

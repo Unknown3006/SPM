@@ -3,12 +3,14 @@ const {
   createPaymentOrder,
   verifyPayment,
   handlePaymentWebhook,
-  downloadInvoice
+  downloadInvoice,
+  getRazorpayConfig
 } = require('../controllers/paymentController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
+router.get('/razorpay-config', getRazorpayConfig);
 router.post('/create-order', protect, createPaymentOrder);
 router.post('/verify', protect, verifyPayment);
 router.post('/webhook', handlePaymentWebhook);
